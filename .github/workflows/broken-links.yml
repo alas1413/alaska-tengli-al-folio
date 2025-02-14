@@ -44,10 +44,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set Custom CA Certificates
+        run: |
+          sudo mkdir -p /usr/local/share/ca-certificates/custom
+          sudo cp certs/stanford_ssl_chain.pem /usr/local/share/ca-certificates/custom/stanford.crt
+          sudo update-ca-certificates
+
       - name: Link Checker 🔗
         uses: lycheeverse/lychee-action@v2.1.0
         with:
           fail: true
-          # removed md files that include liquid tags
-          args: --verbose --include-verbatim --ca-file certs/stanford_ssl_chain.pem
-    
+          args: --verbose --include-verbatim
