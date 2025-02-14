@@ -44,6 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+
       - name: Set Custom CA Certificates
         run: |
           sudo mkdir -p /usr/local/share/ca-certificates/custom
@@ -54,4 +55,7 @@ jobs:
         uses: lycheeverse/lychee-action@v2.1.0
         with:
           fail: true
-          args: --verbose --include-verbatim -- --ca-file certs/stanford_ssl_chain.pem assets/**/*.html **/*.md
+          args: --verbose --include-verbatim
+        env:
+          SSL_CERT_FILE: /etc/ssl/certs/stanford.crt
+          
