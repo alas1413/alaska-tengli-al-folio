@@ -53,14 +53,15 @@ jobs:
         with:
           fail: true
           args: >
+            --user-agent 'curl/7.54'
             --exclude-path README.md
             --exclude-path _pages/404.md
             --exclude-path _pages/blog.md
             --exclude-path _posts/2018-12-22-distill.md
-            --exclude '^(https|http)://www\.linkedin\.com'
+            --exclude-path _posts/2023-04-24-videos.md
             --verbose
             --no-progress
             './**/*.md'
             './**/*.html'
         env:
-          SSL_CERT_FILE: certs/stanford_ssl_chain.pem
+          SSL_CERT_FILE: certs/ca_certificate.pem
