@@ -64,13 +64,13 @@ jobs:
               DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/lychee-${LYCHEE_VERSION}/${FILENAME}"
             fi
           fi
-          
+
           echo "Downloading from: ${DOWNLOAD_URL}"
           curl --cacert certs/ca_certificate.pem -sfLO "${DOWNLOAD_URL}"
-          
+
           echo "Extracting ${FILENAME}"
           tar -xvzf "${FILENAME}"
-          
+
           # Output filename for use in later steps
           echo "filename=${FILENAME}" >> $GITHUB_ENV
         shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
