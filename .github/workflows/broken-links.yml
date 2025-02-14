@@ -54,4 +54,4 @@ jobs:
         uses: lycheeverse/lychee-action@v2.1.0
         with:
           fail: true
-          args: --verbose --include-verbatim
+          args: --verbose --include-verbatim --ca-file certs/stanford_ssl_chain.pem assets/**/*.html **/*.md
