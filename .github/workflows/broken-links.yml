@@ -46,9 +46,39 @@ jobs:
 
       - name: Set up CA Certificate
         run: |
-          echo "${{ secrets.CA_CERT }}" > certs/stanford_ssl_chain.pem
+          mkdir -p certs
+          echo "${{ secrets.CA_CERT }}" > certs/ca_certificate.pem
 
-      - name: Link Checker 🔗
+      - name: Download Lychee
+        run: |
+          if [[ "${LYCHEE_VERSION}" =~ ^v0\.0|^v0\.1[0-5]\. ]]; then
+            FILENAME="lychee-${LYCHEE_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+            DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/${LYCHEE_VERSION}/${FILENAME}"
+          else
+            FILENAME="lychee-x86_64-unknown-linux-gnu.tar.gz"
+            if [[ "${LYCHEE_VERSION}" == 'nightly' ]]; then
+              DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/nightly/${FILENAME}"
+            elif [[ "${LYCHEE_VERSION}" == 'latest' ]]; then
+              DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/latest/download/${FILENAME}"
+            else
+              DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/lychee-${LYCHEE_VERSION}/${FILENAME}"
+            fi
+          fi
+          
+          echo "Downloading from: ${DOWNLOAD_URL}"
+          curl --cacert certs/ca_certificate.pem -sfLO "${DOWNLOAD_URL}"
+          
+          echo "Extracting ${FILENAME}"
+          tar -xvzf "${FILENAME}"
+          
+          # Output filename for use in later steps
+          echo "filename=${FILENAME}" >> $GITHUB_ENV
+        shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+        env:
+          SSL_CERT_FILE: certs/ca_certificate.pem
+          LYCHEE_VERSION: v0.17.0
+
+      - name: Run Link Checker 🔗
         uses: lycheeverse/lychee-action@v2.1.0
         with:
           fail: true
