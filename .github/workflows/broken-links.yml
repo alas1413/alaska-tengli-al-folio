@@ -50,9 +50,10 @@ jobs:
           sudo mkdir -p /usr/local/share/ca-certificates/custom
           sudo cp certs/stanford_ssl_chain.pem /usr/local/share/ca-certificates/custom/stanford.crt
           sudo update-ca-certificates
+          echo "SSL_CERT_FILE=/usr/local/share/ca-certificates/custom/stanford.crt" >> $GITHUB_ENV
 
       - name: Link Checker 🔗
         uses: lycheeverse/lychee-action@v2.1.0
         with:
           fail: true
-          args: --verbose --include-verbatim -- --ca-file=certs/stanford_ssl_chain.pem -- assets/**/*.html **/*.md
+          args: --verbose --include-verbatim assets/**/*.html "**/*.md"
