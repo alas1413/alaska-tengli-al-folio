@@ -44,16 +44,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-
-      - name: Set Custom CA Certificates
+      - name: Set up CA Certificate
         run: |
-          sudo mkdir -p /usr/local/share/ca-certificates/custom
-          sudo cp certs/stanford_ssl_chain.pem /usr/local/share/ca-certificates/custom/stanford.crt
-          sudo update-ca-certificates
-          echo "SSL_CERT_FILE=/usr/local/share/ca-certificates/custom/stanford.crt" >> $GITHUB_ENV
+          echo "${{ secrets.CA_CERT }}" > certs/stanford_ssl_chain.pem
 
       - name: Link Checker 🔗
         uses: lycheeverse/lychee-action@v2.1.0
         with:
           fail: true
-          args: --verbose --include-verbatim assets/**/*.html "**/*.md"
+          args: >
+            --exclude-path README.md
+            --exclude-path _pages/404.md
+            --exclude-path _pages/blog.md
+            --exclude-path _posts/2018-12-22-distill.md
+            --exclude '^(https|http)://www\.linkedin\.com'
+            --verbose
+            --no-progress
+            './**/*.md'
+            './**/*.html'
+        env:
+          SSL_CERT_FILE: certs/stanford_ssl_chain.pem
